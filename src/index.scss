@@ -3,3 +3,9 @@
 h1 {
   color: red;
 }
+
+.messages {
+  overflow-y : scroll;
+  overflow-x : hidden;
+  max-height: 80vh;
+}

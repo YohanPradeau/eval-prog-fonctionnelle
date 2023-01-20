@@ -1,40 +1,20 @@
 const Contact = class Contact {
-  constructor(contactName, contactImage, contactMessages) {
-    this.name = contactName;
-    this.image = contactImage;
-    this.totalMessages = contactMessages;
+  constructor(contact) {
+    this.id = contact.id;
+    this.name = contact.name;
+    this.image = contact.image;
+    this.actions = contact.actions;
   }
 
-  render() {
-    const listElement = document.createElement('li');
-    const listImage = document.createElement('img');
-    const listName = document.createElement('span');
-    const listMessages = document.createElement('span');
+  async checkForAction(messageContent) {
+    const myAction = this.actions.find((action) => action.name === messageContent);
 
-    listElement.classList.add('text-light', 'list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'rounded', 'bg-secondary', 'm-2');
-
-    // image de profil du contact
-    listImage.classList.add('rounded-circle', 'border', 'border-white', 'border-2');
-    listImage.style.width = '50px;';
-    listImage.src = this.image;
-
-    // nom du contact
-    listName.innerText = this.name;
-
-    // date du contact
-    listMessages.classList.add('badge', 'bg-primary', 'rounded-pill');
-    listMessages.innerText = this.totalMessages;
-
-    listElement.appendChild(listImage);
-    listElement.appendChild(listName);
-    listElement.appendChild(listMessages);
-
-    listElement.addEventListener(
-      'click',
-      () => this.name
-    );
-
-    return listElement;
+    if (myAction) {
+      try {
+        return myAction.response();
+      } catch (e) { return e; }
+    }
+    return undefined;
   }
 };
 
