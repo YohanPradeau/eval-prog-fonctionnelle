@@ -1,10 +1,12 @@
 const Message = class Message {
-  constructor(nameMessage, imageMessage, contentMessage, targetMessage) {
+  constructor(nameMessage, imageMessage, contentMessage, targetMessage, timeMessage = '') {
     this.name = nameMessage;
     this.image = imageMessage;
     this.content = contentMessage;
     this.target = targetMessage;
-    this.datetime = new Date().toLocaleString('fr-FR');
+
+    if (timeMessage === '') this.datetime = new Date().toLocaleString('fr-FR');
+    else this.datetime = timeMessage;
   }
 
   render() {
@@ -26,7 +28,7 @@ const Message = class Message {
 
     // nom de l'expediteur
     cardHeader.classList.add('card-header');
-    cardHeader.textContent = this.name;
+    cardHeader.innerText = this.name;
 
     // image de profil de l'expediteur
     cardImage.classList.add('rounded-circle', 'img-thumbnail');
@@ -61,7 +63,16 @@ const Message = class Message {
   }
 
   save() {
-    localStorage.setItem(this.datetime, [this.name, this.image, this.content, this.target]);
+    localStorage.setItem(
+      this.datetime,
+      [
+        this.name,
+        this.image,
+        this.content,
+        this.target,
+        this.datetime
+      ]
+    );
 
     return this;
   }
