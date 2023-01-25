@@ -143,6 +143,7 @@ const Chat = class Chat {
 
       if (myAction) {
         const MY_RESPONSE = await contact.checkForAction(content);
+
         if (MY_RESPONSE) {
           const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
           const CONTAINER_MESSAGES = document.getElementById('messagesList');
@@ -155,8 +156,9 @@ const Chat = class Chat {
             DATE_MESSAGE,
             MY_RESPONSE
           );
+
           this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
-          CONTAINER_MESSAGES.scrollIntoView(false);
+          CONTAINER_MESSAGES.scrollTop = CONTAINER_MESSAGES.scrollHeight;
         }
       }
     });

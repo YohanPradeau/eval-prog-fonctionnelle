@@ -10,12 +10,9 @@ const Contact = class Contact {
     const myAction = this.actions.find((action) => action.name === messageContent);
 
     if (myAction) {
-      try {
-        const myResponse = myAction.response();
-        return myResponse;
-      } catch (e) { return e; }
+      return myAction.response();
     }
-    return undefined;
+    return '<p class="card-text">Rien à faire... pour l\'instant !</p>';
   }
 };
 
