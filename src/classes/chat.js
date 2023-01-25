@@ -20,7 +20,7 @@ const Chat = class Chat {
         CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
         this.callAction(SEND_INPUT.value);
         SEND_INPUT.value = '';
-        CONTAINER_MESSAGES.scrollTo(0, CONTAINER_MESSAGES.scrollHeight);
+        this.autoscroll();
       }
     );
 
@@ -32,12 +32,13 @@ const Chat = class Chat {
           CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
           this.callAction(SEND_INPUT.value);
           SEND_INPUT.value = '';
-          CONTAINER_MESSAGES.scrollTo(0, CONTAINER_MESSAGES.scrollHeight);
+          this.autoscroll();
         }
       }
     );
 
     this.load();
+    this.autoscroll();
   }
 
   templateContact(image, name, id) {
@@ -50,7 +51,7 @@ const Chat = class Chat {
     `;
   }
 
-  templateReceived(name, image, time, content) {
+  templateReceived(image, name, time, content) {
     return `
             <div class="row mt-2">
               <div class="col-6">
@@ -111,19 +112,20 @@ const Chat = class Chat {
           message.datetime,
           message.content
         );
-      } else {
-        const MY_CONTACT = document.getElementById(`contact-${message.source}`);
-        MY_CONTACT.innerText = parseInt(MY_CONTACT.innerText, 10) + 1;
-
-        CONTAINER_MESSAGES.innerHTML += this.templateReceived(
-          message.name,
-          message.image,
-          message.datetime,
-          message.content
-        );
+        return;
       }
+
+      const MY_CONTACT = document.getElementById(`contact-${message.source}`);
+
+      MY_CONTACT.innerText = parseInt(MY_CONTACT.innerText, 10) + 1;
+
+      CONTAINER_MESSAGES.innerHTML += this.templateReceived(
+        message.image,
+        message.name,
+        message.datetime,
+        message.content
+      );
     });
-    CONTAINER_MESSAGES.scrollTo(0, CONTAINER_MESSAGES.scrollHeight);
   }
 
   save(name, content, datetime, source, image = null) {
@@ -151,17 +153,23 @@ const Chat = class Chat {
 
           MY_CONTACT.innerText = parseInt(MY_CONTACT.innerText, 10) + 1;
           CONTAINER_MESSAGES.innerHTML += this.templateReceived(
-            contact.name,
             contact.image,
+            contact.name,
             DATE_MESSAGE,
             MY_RESPONSE
           );
 
           this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
-          CONTAINER_MESSAGES.scrollTop = CONTAINER_MESSAGES.scrollHeight;
+          this.autoscroll();
         }
       }
     });
+  }
+
+  autoscroll() {
+    const CONTAINER_MESSAGES = document.getElementById('messagesList');
+
+    CONTAINER_MESSAGES.scrollTo(0, CONTAINER_MESSAGES.scrollHeight);
   }
 };
 
