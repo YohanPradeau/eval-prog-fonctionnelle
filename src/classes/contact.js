@@ -6,12 +6,13 @@ const Contact = class Contact {
     this.actions = contact.actions;
   }
 
-  async checkForAction(messageContent) {
+  checkForAction(messageContent) {
     const myAction = this.actions.find((action) => action.name === messageContent);
 
     if (myAction) {
       try {
-        return myAction.response();
+        const myResponse = myAction.response();
+        return myResponse;
       } catch (e) { return e; }
     }
     return undefined;

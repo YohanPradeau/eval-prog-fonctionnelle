@@ -14,21 +14,25 @@ export default [
       },
       {
         name: '!citation',
-        response: () => fetch('http://api.quotable.io/random')
-          .then((response) => response.json())
-          .then((brut) => `
+        response: async () => {
+          const response = await fetch('http://api.quotable.io/random');
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+          const brut = await response.json();
+          return `
                           <div class="card text-bg-light">
                             <h5 class="card-header">
                              ${brut.author}
                             </h5>
                             <div class="card-body">
-                              <h5 class="card-title">${brut.dateAdded}</h5>
+                              <h5 class="card-title">${brut.dateAdded.split('-').reverse().join('/')}</h5>
                               <p class="card-text">${brut.content}</p>
                             </div>
                           </div>
                         </div>
-              `)
-          .catch((e) => e)
+              `;
+        }
       }
     ]
   },
@@ -47,22 +51,26 @@ export default [
       },
       {
         name: '!rocky',
-        response: () => fetch('http://www.omdbapi.com/?i=tt0075148&apikey=9d5c9f3e')
-          .then((response) => response.json())
-          .then((brut) => `
+        response: async () => {
+          const response = await fetch('http://www.omdbapi.com/?i=tt0075148&apikey=9d5c9f3e');
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+          const brut = await response.json();
+          return `
                           <div class="card text-bg-light">
                             <h5 class="card-header">
                              ${brut.Title}
                             </h5>
                             <div class="card-body">
-                              <h5 class="card-title">${brut.Released}</h5>
+                              <h5 class="card-title">Released : ${brut.Released}</h5>
                               <p class="card-text">Synopsis : ${brut.Plot}</p>
                               <p class="card-text">Note : ${brut.imdbRating}/10</p>
                             </div>
                           </div>
                         </div>
-              `)
-          .catch((e) => e)
+              `;
+        }
       }
     ]
   },
@@ -81,21 +89,25 @@ export default [
       },
       {
         name: '!cocktail',
-        response: () => fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-          .then((response) => response.json())
-          .then((brut) => `
+        response: async () => {
+          const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php');
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+          const brut = await response.json();
+          return `
                           <div class="card text-bg-light">
                             <h5 class="card-header">
-                             ${brut[0].strDrink}
+                             ${brut.drinks[0].strDrink}
                             </h5>
                             <div class="card-body d-flex flex-row">
-                              <p class="card-text d-flex">Recette : ${brut[0].strInstructions}/10</p>
-                              <img width="40%" src="${brut[0].strDrinkThumb}" class="rounded-circle img-thumbnail d-flex" alt="...">
+                              <p class="card-text d-flex">${brut.drinks[0].strInstructions}</p>
+                              <img width="40%" src="${brut.drinks[0].strDrinkThumb}" class="rounded-circle img-thumbnail d-flex" alt="...">
                             </div>
                           </div>
                         </div>
-              `)
-          .catch((e) => e)
+              `;
+        }
       }
     ]
   }

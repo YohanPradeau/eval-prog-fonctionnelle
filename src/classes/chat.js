@@ -138,12 +138,11 @@ const Chat = class Chat {
   }
 
   callAction(content) {
-    this.contacts.forEach((contact) => {
+    this.contacts.forEach(async (contact) => {
       const myAction = contact.actions.find((action) => action.name === content);
 
       if (myAction) {
-        const MY_RESPONSE = contact.checkForAction(content);
-
+        const MY_RESPONSE = await contact.checkForAction(content);
         if (MY_RESPONSE) {
           const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
           const CONTAINER_MESSAGES = document.getElementById('messagesList');
@@ -157,6 +156,7 @@ const Chat = class Chat {
             MY_RESPONSE
           );
           this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
+          CONTAINER_MESSAGES.scrollIntoView(false);
         }
       }
     });
