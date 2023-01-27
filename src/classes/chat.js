@@ -128,7 +128,7 @@ const Chat = class Chat {
     });
   }
 
-  save(name, content, datetime, source, image = null) {
+  saveMessageInLocalStorage(name, content, datetime, source, image = null) {
     const rawMessages = JSON.parse(localStorage.getItem('yohan_messages'));
     const newMessage = {
       name, image, content, datetime, source
