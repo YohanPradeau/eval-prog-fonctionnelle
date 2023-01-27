@@ -8,36 +8,36 @@ const Chat = class Chat {
   initial_render() {
     const SEND_BUTTON = document.getElementById('sendButton');
     const SEND_INPUT = document.getElementById('sendInput');
-    const CONTAINER_MESSAGES = document.getElementById('messagesList');
-    const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
 
     this.contacts.forEach((contact) => { this.renderContact(contact); });
 
     SEND_BUTTON.addEventListener(
       'click',
       () => {
-        this.save('Moi', SEND_INPUT.value, DATE_MESSAGE, 'me');
-        CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
-        this.callAction(SEND_INPUT.value);
-        SEND_INPUT.value = '';
-        this.autoscroll();
+        this.messageFromMe();
       }
     );
 
     SEND_INPUT.addEventListener(
       'keypress',
       (e) => {
-        if (e.key === 'Enter') {
-          this.save('Moi', SEND_INPUT.value, DATE_MESSAGE, 'me');
-          CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
-          this.callAction(SEND_INPUT.value);
-          SEND_INPUT.value = '';
-          this.autoscroll();
-        }
+        if (e.key === 'Enter') this.messageFromMe();
       }
     );
 
-    this.load();
+    this.loadAllMessagesFromLocalStorage();
+    this.autoscroll();
+  }
+
+  messageFromMe() {
+    const SEND_INPUT = document.getElementById('sendInput');
+    const CONTAINER_MESSAGES = document.getElementById('messagesList');
+    const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
+
+    this.save('Moi', SEND_INPUT.value, DATE_MESSAGE, 'me');
+    CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
+    this.callAction(SEND_INPUT.value);
+    SEND_INPUT.value = '';
     this.autoscroll();
   }
 
@@ -97,7 +97,7 @@ const Chat = class Chat {
     CONTAINER_CONTACTS.innerHTML += this.templateContact(contact.image, contact.name, contact.id);
   }
 
-  load() {
+  loadAllMessagesFromLocalStorage() {
     let rawMessages = JSON.parse(localStorage.getItem('yohan_messages'));
     const CONTAINER_MESSAGES = document.getElementById('messagesList');
 
@@ -142,26 +142,23 @@ const Chat = class Chat {
   callAction(content) {
     this.contacts.forEach(async (contact) => {
       const myAction = contact.actions.find((action) => action.name === content);
+      const MY_RESPONSE = await contact.checkForAction(content);
 
-      if (myAction) {
-        const MY_RESPONSE = await contact.checkForAction(content);
+      if (myAction && MY_RESPONSE) {
+        const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
+        const CONTAINER_MESSAGES = document.getElementById('messagesList');
+        const MY_CONTACT = document.getElementById(`contact-${contact.id}`);
 
-        if (MY_RESPONSE) {
-          const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
-          const CONTAINER_MESSAGES = document.getElementById('messagesList');
-          const MY_CONTACT = document.getElementById(`contact-${contact.id}`);
+        MY_CONTACT.innerText = parseInt(MY_CONTACT.innerText, 10) + 1;
+        CONTAINER_MESSAGES.innerHTML += this.templateReceived(
+          contact.image,
+          contact.name,
+          DATE_MESSAGE,
+          MY_RESPONSE
+        );
 
-          MY_CONTACT.innerText = parseInt(MY_CONTACT.innerText, 10) + 1;
-          CONTAINER_MESSAGES.innerHTML += this.templateReceived(
-            contact.image,
-            contact.name,
-            DATE_MESSAGE,
-            MY_RESPONSE
-          );
-
-          this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
-          this.autoscroll();
-        }
+        this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
+        this.autoscroll();
       }
     });
   }

@@ -8,7 +8,6 @@ const Contact = class Contact {
 
   checkForAction(messageContent) {
     const myAction = this.actions.find((action) => action.name === messageContent);
-
     if (myAction) {
       return myAction.response();
     }
