@@ -34,7 +34,7 @@ const Chat = class Chat {
     const CONTAINER_MESSAGES = document.getElementById('messagesList');
     const DATE_MESSAGE = new Date().toLocaleString('FR-fr');
 
-    this.save('Moi', SEND_INPUT.value, DATE_MESSAGE, 'me');
+    this.saveMessageInLocalStorage('Moi', SEND_INPUT.value, DATE_MESSAGE, 'me');
     CONTAINER_MESSAGES.innerHTML += this.templateSended(DATE_MESSAGE, SEND_INPUT.value);
     this.callAction(SEND_INPUT.value);
     SEND_INPUT.value = '';
@@ -157,7 +157,7 @@ const Chat = class Chat {
           MY_RESPONSE
         );
 
-        this.save(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
+        this.saveMessageInLocalStorage(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
         this.autoscroll();
       }
     });
