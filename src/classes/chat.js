@@ -157,7 +157,13 @@ const Chat = class Chat {
           MY_RESPONSE
         );
 
-        this.saveMessageInLocalStorage(contact.name, MY_RESPONSE, DATE_MESSAGE, contact.id, contact.image);
+        this.saveMessageInLocalStorage(
+          contact.name,
+          MY_RESPONSE,
+          DATE_MESSAGE,
+          contact.id,
+          contact.image
+        );
         this.autoscroll();
       }
     });
